@@ -23,7 +23,7 @@ orbitCount = 1;
 stopTime = orbitCount/revs_per_day*24*60*60;
 %stepSize = 24*60*60/revs_per_day/100000;
 stepSize = 5;
-timeSpan = [0:stepSize:stopTime]';
+timeSpan = [0:stepSize:stopTime];
 
 sim('NUM_PROP',[],options);
 
@@ -41,11 +41,11 @@ sim('J2_Accel',[],options);
 out_r_J2_Accel = reshape(J2_r,[size(J2_r,1),size(J2_r,3)]);
 out_v_J2_Accel = reshape(J2_v,[size(J2_v,1),size(J2_v,3)]);
 
-figure
-hold on
-plot3(out_r_J2_Accel(1,:),out_r_J2_Accel(2,:),out_r_J2_Accel(3,:))
-earthPlot(1)
-hold off
+% figure
+% hold on
+% plot3(out_r_J2_Accel(1,:),out_r_J2_Accel(2,:),out_r_J2_Accel(3,:))
+% earthPlot(1)
+% hold off
 
 sim('Orbit_Sim_ECEF',[],options);
 
@@ -67,9 +67,6 @@ for i = 1:size(err_r,2)
     [r_rtn2(:,i),v_rtn2(:,i)] = ECI2RTN(r_eci2(:,i), v_eci2(:,i));
     osc_h(:,i) = norm(cross(out_r_NUM_PROP(:,i),out_v_NUM_PROP(:,i)));
     osc_h_J2(:,i) = norm(cross(out_r_J2_Accel(:,i),out_v_J2_Accel(:,i)));
-    osc_hvec_J2(:,i) = cross(r_eci2(:,i),v_eci2(:,i));
-    osc_evec_J2(:,i) = ((norm(v_eci2(:,i))^2/mu)-(1/norm(r_eci2(:,i))))*...
-        r_eci2(:,i)-(dot(r_eci2(:,i),v_eci2(:,i)))*v_eci2(:,i)/mu;
 end
 
 % err_r_rtn = [r_rtn1(1,:)-r_rtn2(1,:);...
@@ -124,14 +121,19 @@ anom_bar = mean(osc_anom_J2);
 
 sim('MeanOE',[],options);
 
-R2D = 180/pi;
+mean_a =0;
+mean_e = 0;
+mean_inc = 0;
+mean_ran = 0;
+mean_w = 0;
+mean_anom = 0;
 
-mean_a = a + mean_da.*timeSpan;
-mean_e = e + mean_de.*timeSpan;
-mean_inc = inc + R2D*mean_dinc.*timeSpan;
-mean_RAAN = RAAN + R2D*mean_dRAAN.*timeSpan;
-mean_w = w + R2D*mean_dw.*timeSpan;
-mean_anom = anom + R2D*mean_danom.*timeSpan;
+mean_a = a + mean_a = mean_da*stepSize;
+mean_e = e + mean_de*stepSize;
+mean_inc = inc + mean_dinc*stepSize;
+mean_RAAN = RAAN + mean_dRAAN*stepSize;
+mean_w = w + mean_dw*stepSize;
+mean_anom = anom + mean_danom*stepSize;
 
 %%
 
@@ -148,26 +150,14 @@ subplot(4,2,8);plot(osc_ME);xlabel('Time (sec)');ylabel('Specific Mech. Energy (
 
 figure
 title('Osculating Orbital Elements with J2 Effects')
-subplot(3,1,1);plot(osc_evec_J2(1,:));xlabel('Time (sec)');ylabel('Semimajor Axis (km)');
-subplot(3,1,2);plot(osc_evec_J2(2,:));xlabel('Time (sec)');ylabel('Semimajor Axis (km)');
-subplot(3,1,3);plot(osc_evec_J2(3,:));xlabel('Time (sec)');ylabel('Semimajor Axis (km)');
-
-figure
-title('Osculating Orbital Elements with J2 Effects')
-subplot(3,1,1);plot(osc_hvec_J2(1,2:end));xlabel('Time (sec)');ylabel('Semimajor Axis (km)');
-subplot(3,1,2);plot(osc_hvec_J2(2,2:end));xlabel('Time (sec)');ylabel('Semimajor Axis (km)');
-subplot(3,1,3);plot(osc_hvec_J2(3,2:end));xlabel('Time (sec)');ylabel('Semimajor Axis (km)');
-
-figure
-title('Unperturbed Osculating Orbital Elements')
-subplot(4,2,1);plot(osc_a);xlabel('Time (sec)');ylabel('Semimajor Axis (km)');
-subplot(4,2,2);plot(osc_e);xlabel('Time (sec)');ylabel('Eccentricity');
-subplot(4,2,3);plot(osc_inc);xlabel('Time (sec)');ylabel('Inclination (\circ)');
-subplot(4,2,4);plot(osc_RAAN);xlabel('Time (sec)');ylabel('RAAN (\circ)');
-subplot(4,2,5);plot(osc_w);xlabel('Time (sec)');ylabel('Arg. of Periapsis (\circ)');
-subplot(4,2,6);plot(osc_anom);xlabel('Time (sec)');ylabel('True Anomaly (\circ)');
-subplot(4,2,7);plot(osc_h);xlabel('Time (sec)');ylabel('Angular Momentum (km^2/s)');
-subplot(4,2,8);plot(osc_ME);xlabel('Time (sec)');ylabel('Specific Mech. Energy (km^2/s^2)');
+subplot(4,2,1);plot(osc_a_J2);xlabel('Time (sec)');ylabel('Semimajor Axis (km)');
+subplot(4,2,2);plot(osc_e_J2);xlabel('Time (sec)');ylabel('Eccentricity');
+subplot(4,2,3);plot(osc_inc_J2);xlabel('Time (sec)');ylabel('Inclination (\circ)');
+subplot(4,2,4);plot(osc_RAAN_J2);xlabel('Time (sec)');ylabel('RAAN (\circ)');
+subplot(4,2,5);plot(osc_w_J2);xlabel('Time (sec)');ylabel('Arg. of Periapsis (\circ)');
+subplot(4,2,6);plot(osc_anom_J2);xlabel('Time (sec)');ylabel('True Anomaly (\circ)');
+subplot(4,2,7);plot(osc_h_J2);xlabel('Time (sec)');ylabel('Angular Momentum (km^2/s)');
+subplot(4,2,8);plot(osc_ME_J2);xlabel('Time (sec)');ylabel('Specific Mech. Energy (km^2/s^2)');
 
 figure
 subplot(4,2,1);hold on; plot(osc_a_J2);plot(mean_a);xlabel('Time (sec)');ylabel('Semimajor Axis (km)');hold off;
