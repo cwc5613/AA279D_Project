@@ -21,7 +21,7 @@ r0 = r_eci;
 options = simset('SrcWorkspace','current');
 orbitCount = 10;
 stopTime = orbitCount/revs_per_day*24*60*60;
-stepSize = 1;
+stepSize = 24*60*60/revs_per_day/100000;
 sim('NUM_PROP',[],options);
 
 out_r_NUM_PROP = reshape(NUM_r,[size(NUM_r,1),size(NUM_r,3)]);

@@ -5,7 +5,7 @@ clear all;
 
 mu = 398600; %  Standard gravitational parameter for the earth
 % TLE file name 
-fname = 'SKYSAT1_TLE.txt';
+fname = 'DRAGON_CRS14_TLE.txt';
 % Open the TLE file and read TLE elements
 fid = fopen(fname, 'rb');
 L1c = fscanf(fid,'%21c%',1);
