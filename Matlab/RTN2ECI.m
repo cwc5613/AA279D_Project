@@ -1,5 +1,5 @@
-function dcm = ECI2RTN(R, V)
-% ECI2RTN Computes rotation matrices from inertial frame to RTN frame
+function dcm = RTN2ECI(R, V)
+% RTN2ECI Computes rotation matrices from RTN frame to inertial frame
 %
 % Inputs:
 %   R - 3xn inertial position vectors
@@ -40,7 +40,7 @@ for i = 1:numPos
     T = cross(nVec, rVec);
     tVec = T./norm(T);
     
-    dcm(:, :, i) = [rVec, tVec, nVec].';
+    dcm(:, :, i) = [rVec, tVec, nVec];
 end
 
 end

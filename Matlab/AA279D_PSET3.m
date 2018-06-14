@@ -36,9 +36,9 @@ del_anom2 = anom2-anom;
 %% Position and Velocity in ECI
 
 [r_ECI_init, v_ECI_init]=...
-    OE2ECI(a, e, D2R*inc, D2R*RAAN, D2R*w, D2R*anom, mu);
+    OE2ECI(a, e, inc, RAAN, w, anom, mu);
 [r2_ECI_init, v2_ECI_init]=...
-    OE2ECI(a2, e2, D2R*inc2, D2R*RAAN2, D2R*w2, D2R*anom2, mu);
+    OE2ECI(a2, e2, inc2, RAAN2, w2, anom2, mu);
 
 th0 = D2R*w + D2R*anom;
 r0 = norm(r_ECI_init);
